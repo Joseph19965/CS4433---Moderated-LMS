@@ -1,0 +1,11 @@
+digraph{graph[label="End-to-end Workflow with Roles",labelloc=t,fontsize=18,rankdir=TB,nodesep=.25,ranksep=.35];node[shape=box,style="rounded,filled",fontname=Helvetica,fontsize=11,color="#427097",fillcolor="#edf3f9"];a[label="STUDENT
+Select assignment + submit"];b[label="SYSTEM
+Validate role, enrolment, deadline"];c[label="SYSTEM
+Persist Submitted/Late or replace resubmission"];d[label="LECTURER
+Mark + written feedback"];e[label="SYSTEM
+Apply penalty + audit mark change"];f[label="HoD
+Review / adjust with reason"];g[label="SYSTEM
+Audit moderation; set Moderated"];h[label="HoD
+Release only if all recorded marks moderated"];i[label="STUDENT
+View released mark + feedback",fillcolor="#e7f5ee"];j[label="LECTURER
+Re-mark rejected submission",fillcolor="#faeded"];a->b->c->d->e->f;f->g[label="approve"];f->j[label="reject"];j->f[label="re-review"];g->h->i;}

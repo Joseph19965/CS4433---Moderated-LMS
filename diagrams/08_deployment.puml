@@ -1,0 +1,24 @@
+@startuml
+node "School computer / Ubuntu or Windows" as HOST {
+ artifact "lms console executable" as EXE
+ node "local process" as PROC {
+  component "Console presentation" as UI
+  component "Business services + policies" as BL
+  component "SQLite data-access / prepared SQL" as DA
+ }
+ database "school.db on protected local disk" as SQL
+ folder "offline backup (access restricted)" as BK
+ UI --> BL
+ BL --> DA
+ DA --> SQL
+ SQL ..> BK : technician backup
+}
+actor "Administrator / Lecturer / HoD / Student" as PERSON
+PERSON --> EXE : local terminal
+EXE --> PROC
+note right of HOST
+No cloud, no web/mobile,
+no online dependence;
+single host deployment.
+end note
+@enduml

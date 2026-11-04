@@ -1,0 +1,85 @@
+@startuml
+skinparam classAttributeIconSize 0
+abstract class User { #id_: int
+#username_: string
++id(): int
++username(): string
++role(): string {abstract} }
+class Student
+class Lecturer
+class HoD
+class Administrator
+User <|-- Student
+User <|-- Lecturer
+User <|-- HoD
+User <|-- Administrator
+class UserFactory { +create(id:int,name:string,role:string): unique_ptr<User> }
+UserFactory ..> User : creates
+interface LatePenaltyStrategy { +finalMark(raw:double,max:double,secondsLate:int64): double }
+class StandardLatePenalty
+LatePenaltyStrategy <|.. StandardLatePenalty
+interface MarkObserver { +onMarkChange(event:MarkChange):void }
+class AuditService { -db_: Database&
++onMarkChange(event):void }
+class NotificationService { -messages_:vector<string>
++onMarkChange(event):void }
+MarkObserver <|.. AuditService
+MarkObserver <|.. NotificationService
+class MarkChange { +markId:int
++actor:int
++oldValue:optional<double>
++newValue:double
++reason:string
++when:int64 }
+class Database { -db_:sqlite3*
++exec(sql:string):void
++schema():void
++lastId():int64 }
+class Statement { -st_:sqlite3_stmt*
++bind(index:int,value):void
++next():bool
++execute():void }
+class SubmissionRepository { -db_:Database&
++get(assignment:int,student:int):optional<SubmissionView>
++insert(...):void
++replace(...):void }
+class LmsService { -db_:Database
+-policy_:StandardLatePenalty
+-audit_:AuditService
+-notices_:NotificationService
+-submissions_:SubmissionRepository
++login(...):int
++addAssignment(...):int
++submit(...):int
++mark(...):void
++moderate(...):void
++releaseCourse(...):int
++individualExtension(...):void
++classExtension(...):void
++lecturerSubmissions(...): vector<ReviewRow>
++hodSubmissions(...): vector<ReviewRow>
++studentAssignments(...):vector<AssignmentView> }
+LmsService *-- Database
+LmsService *-- SubmissionRepository
+LmsService *-- StandardLatePenalty
+LmsService *-- AuditService
+LmsService *-- NotificationService
+SubmissionRepository --> Database
+AuditService --> Database
+Database ..> Statement
+class AssignmentView { +id:int
++courseId:int
++deadline:int64
++effectiveDeadline:int64
++maximum:double
++extensionSource:string }
+class SubmissionView { +id:int
++status:string
++submittedAt:int64 }
+class MarkView { +finalMark:double
++feedback:string
++status:string }
+LmsService ..> AssignmentView
+LmsService ..> MarkView
+SubmissionRepository ..> SubmissionView
+@enduml

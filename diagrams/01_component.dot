@@ -1,0 +1,7 @@
+digraph{graph[rankdir=LR,label="Layered Component Architecture",labelloc=t,fontsize=20,pad=.2,nodesep=.3,ranksep=.8];node[shape=box,style="rounded,filled",fillcolor="#edf3f9",color="#427097",fontname=Helvetica]; actors[label="Four user roles"];ui[label="Presentation
+ConsoleUI (main.cpp)"];bl[label="Business Logic
+LmsService + Policy
+UserFactory, Observer"];da[label="Data Access
+SubmissionRepository
+Database/Statement"];db[label="SQLite
+school.db",shape=cylinder,fillcolor="#e7f5ee"];actors->ui->bl->da->db;}

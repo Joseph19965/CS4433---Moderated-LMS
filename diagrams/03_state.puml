@@ -1,0 +1,13 @@
+@startuml
+[*] --> Created
+Created --> Submitted : submitAt <= effectiveDeadline
+Created --> Late : submitAt > effectiveDeadline
+Submitted --> Submitted : resubmit before effective deadline
+Submitted --> Marked : lecturer marks / feedback
+Late --> Marked : lecturer marks / penalty
+Marked --> Moderated : HoD reviews and approves
+Marked --> Rejected : HoD rejects / reason
+Rejected --> Marked : lecturer remarks
+Moderated --> Released : HoD releases course
+Released --> [*]
+@enduml

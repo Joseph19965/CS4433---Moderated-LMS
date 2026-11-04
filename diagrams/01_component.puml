@@ -1,0 +1,26 @@
+@startuml
+skinparam componentStyle rectangle
+actor "Student/Lecturer/HoD/Admin" as Actor
+package "Presentation layer" { [ConsoleUI
+main.cpp] as UI }
+package "Business logic layer" { [LmsService] as SVC
+ [StandardLatePenalty
+(Strategy)] as PEN
+ [UserFactory] as FAC
+ [AuditService] as AUD
+ [NotificationService] as NOT }
+package "Data access layer" { [Database / Statement] as DB
+ [SubmissionRepository] as REPO }
+database "SQLite school.db" as SQL
+Actor --> UI
+UI --> SVC
+SVC --> PEN
+SVC --> FAC
+SVC --> AUD
+SVC --> NOT
+SVC --> REPO
+SVC --> DB
+REPO --> DB
+AUD --> DB
+DB --> SQL
+@enduml

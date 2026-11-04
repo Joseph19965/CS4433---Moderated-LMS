@@ -1,0 +1,8 @@
+digraph{graph[label="Moderate and Release - Sequence of Calls",labelloc=t,rankdir=TB,fontsize=18,nodesep=.22,ranksep=.35];node[shape=box,style="rounded,filled",color="#427097",fillcolor="#edf3f9",fontsize=11];a[label="1 HoD → ConsoleUI → LmsService
+moderate(submission, raw, reason)"];b[label="2 LmsService → Database
+check HoD dept and Marked state"];c[label="3 LmsService → StandardLatePenalty
+recompute final mark"];d[label="4 LmsService → Database
+BEGIN + UPDATE Mark/Submission"];e[label="5 LmsService → AuditService
+INSERT who/when/old/new/reason"];f[label="6 Database COMMIT"];g[label="7 HoD → LmsService
+releaseCourse: require all Marked/Rejected cleared"];h[label="8 Database → Student
+Released mark + feedback only",fillcolor="#e7f5ee"];a->b->c->d->e->f->g->h;}

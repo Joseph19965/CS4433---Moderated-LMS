@@ -1,0 +1,27 @@
+@startuml
+actor Student
+participant ConsoleUI
+participant LmsService
+participant SubmissionRepository
+participant Database
+Student -> ConsoleUI: submit(assignment, content)
+ConsoleUI -> LmsService: submit(student, assignment, text, timestamp)
+LmsService -> Database: check user role, enrolment; resolve deadline
+Database --> LmsService: eligible, effective deadline
+alt empty text or not enrolled
+ LmsService --> ConsoleUI: Error (no mutation)
+else existing submission
+ LmsService -> SubmissionRepository: get(assignment,student)
+ alt before effective deadline and status Submitted
+  LmsService -> SubmissionRepository: replace(content, timestamp, Submitted)
+ else late / already marked
+  LmsService --> ConsoleUI: Error: resubmit not allowed
+ end
+else first submission
+ LmsService -> SubmissionRepository: insert(content, timestamp, Submitted/Late)
+ SubmissionRepository -> Database: prepared INSERT
+ Database --> SubmissionRepository: id
+end
+LmsService --> ConsoleUI: submission id
+ConsoleUI --> Student: confirmation / error
+@enduml

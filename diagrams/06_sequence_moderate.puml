@@ -1,0 +1,30 @@
+@startuml
+actor HoD
+participant ConsoleUI
+participant LmsService
+participant Database
+participant StandardLatePenalty
+participant AuditService
+actor Student
+HoD -> ConsoleUI: moderate(submission,revisedRaw,reason)
+ConsoleUI -> LmsService: moderate(hod,...)
+LmsService -> Database: verify HoD department; load Marked row
+alt role invalid, missing reason, wrong state
+ LmsService --> ConsoleUI: Error (unchanged)
+else permitted
+ LmsService -> StandardLatePenalty: finalMark(revisedRaw,max,lateSeconds)
+ StandardLatePenalty --> LmsService: revised final
+ LmsService -> Database: BEGIN IMMEDIATE; UPDATE mark; status Moderated
+ LmsService -> AuditService: onMarkChange(old,new,who,when,why)
+ AuditService -> Database: INSERT audit_event
+ LmsService -> Database: COMMIT
+end
+HoD -> ConsoleUI: release(course)
+ConsoleUI -> LmsService: releaseCourse(hod,course)
+LmsService -> Database: assert no Marked or Rejected rows; UPDATE Moderated -> Released
+Database --> LmsService: released count
+Student -> ConsoleUI: results
+ConsoleUI -> LmsService: releasedMark(student,assignment)
+LmsService -> Database: SELECT ... WHERE status='Released' AND student_id=?
+Database --> Student: released mark and feedback only
+@enduml

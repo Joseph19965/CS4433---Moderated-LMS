@@ -1,0 +1,5 @@
+digraph{graph[label="Single-Host Offline Deployment",labelloc=t,rankdir=LR,fontsize=19,nodesep=.4,ranksep=.6];node[shape=box,style="rounded,filled",fontname=Helvetica,fillcolor="#edf3f9",color="#427097"];people[label="Four roles
+Local terminal"];executable[label="School workstation
+C++17 console executable"];process[label="Business rules + SQLite DAL"];database[label="Protected local disk
+school.db",shape=cylinder,fillcolor="#e7f5ee"];backup[label="Technician backup
+Offline, access-controlled"];people->executable->process->database->backup[style=dashed];}

@@ -1,0 +1,28 @@
+Requirement,Priority,Use case,Design elements,Database tables,Source file(s),Verification/test ID,Status
+FR-01 Login by credentials,Must,UC-Login,UserFactory LmsService::login,users,src/lms.cpp;src/main.cpp,TC-03 CTest authentication,Automated PASS
+FR-02 Administrator creates updates deactivates accounts,Must,UC-Manage Accounts,Administrator LmsService::addUser/updateUser/deactivateUser,users,src/lms.cpp;src/main.cpp,TC-04 CTest admin CRUD,Automated PASS
+FR-03 Assign lecturers and enrol students,Must,UC-Assign/Enrol,LmsService::assignLecturer/enrol,course_lecturer;enrolment,src/lms.cpp;src/main.cpp,TC-04/05 CTest RBAC/participation,Automated PASS
+FR-04 Manage departments and courses,Must,UC-Manage Courses,LmsService department and course CRUD,department;course,src/lms.cpp;src/main.cpp,TC-04 CTest admin CRUD,Automated PASS
+FR-05 Role-based access for all four roles,Must,All use cases,User hierarchy LmsService::require,users;course_lecturer,src/lms.cpp;include/lms/lms.hpp,TC-03/04/10 CTest RBAC,Automated PASS
+FR-06 Lecturer creates assignment with deadline/max mark,Must,UC-Create Assignment,LmsService::addAssignment,assignment,src/lms.cpp;src/main.cpp,TC-04/05 fixture creates assignment,Automated PASS
+FR-07 Lecturer individual extensions,Must,UC-Grant Individual Extension,LmsService::individualExtension/userDeadline,extension;assignment;enrolment,src/lms.cpp;src/main.cpp,TC-08 CTest individual extension,Automated PASS
+FR-08 Submit/resubmit before effective deadline,Must,UC-Submit Assignment,SubmissionRepository LmsService::submit,submission;enrolment;assignment,src/lms.cpp;src/main.cpp,TC-05 CTest submit/resubmit,Automated PASS
+FR-09 Record late and penalty 10pct/day through day 3 then zero,Must,UC-Submit Assignment/Mark,StandardLatePenalty Submission state machine,submission;mark,src/lms.cpp,TC-02/06/07 penalty boundaries,Automated PASS
+FR-10 Lecturer mark and written feedback,Must,UC-Mark Submission,LmsService::mark,mark;submission,src/lms.cpp;src/main.cpp,TC-06/10 mark and feedback,Automated PASS
+FR-11 HoD review and moderate within department,Must,UC-Moderate and Release,LmsService::moderate/reject,mark;users;course;submission,src/lms.cpp;src/main.cpp,TC-10/11 CTest moderation,Automated PASS
+FR-12 HoD release approved marks only,Must,UC-Moderate and Release,LmsService::releaseCourse,mark;submission;course,src/lms.cpp;src/main.cpp,TC-10/11 CTest release gate,Automated PASS
+FR-13 Student views released marks/feedback only,Must,UC-View Results,LmsService::releasedMark,mark;submission,src/lms.cpp;src/main.cpp,TC-06/10 CTest visibility,Automated PASS
+FR-14 Audit every mark change,Must,UC-Mark/Moderate,AuditService MarkObserver,mark;audit_event,src/lms.cpp,TC-06/10/14 audit CTest,Automated PASS
+FR-15 Student views enrolled courses/assignments,Must,UC-View Assignments,LmsService::studentAssignments,assignment;enrolment;course,src/lms.cpp;src/main.cpp,TC-08/09 CTest assignment list,Automated PASS
+FR-16 Offline on single computer,Must,General operation,Deployment diagram local SQLite,all tables,src/main.cpp;README.md,ST-12 disconnected stakeholder field test,Pending formal acceptance
+FR-17 Salted password hashes never plain text,Must,UC-Login,OpenSSL PBKDF2 and UserFactory,users,src/lms.cpp,TC-03 CTest hash inspection,Automated PASS
+FR-18 CR1 lecturer extends class deadline,Must (v1.1),UC-Grant Class Extension,LmsService::classExtension,assignment;class_extension,src/lms.cpp;src/main.cpp,TC-09 CTest class extension; Catch2 CR1,Automated CTest PASS / Catch2 not local
+FR-19 CR1 extensions shown on list,Must (v1.1),UC-View Assignments,AssignmentView LmsService::userDeadline,assignment;class_extension;extension,src/lms.cpp;src/main.cpp,TC-09 CTest precedence/source,Automated CTest PASS
+NFR-01 Login within 2 seconds at 800 users,Must,UC-Login,LmsService::login and index,users,src/lms.cpp,PT-01 800-user benchmark,Not measured
+NFR-02 Up to 50 local sessions under 2s,Must,General operation,Deployment/performance architecture,all tables,src/main.cpp;README.md,PT-02 concurrency test,Not established by this architecture
+NFR-03 Recognized salted hash,Must,UC-Login,OpenSSL PBKDF2,users,src/lms.cpp,TC-03 database inspection,Automated PASS
+NFR-04 Fully offline,Must,General operation,SQLite single host,all tables,src/main.cpp;README.md,ST-12 offline acceptance test,Architecture supports; formal test pending
+NFR-05 90pct non-IT user success within 5 min,Should,All role workflows,Console user manual,n/a,src/main.cpp,AT-01 observed usability trial,Pending
+NFR-06 Audit 100pct changes and metadata,Must,UC-Mark/Moderate,AuditService and transactions,audit_event,src/lms.cpp,TC-06/10/14 audit tests,Automated PASS for sampled paths
+NFR-07 Zero high-severity SQL injection warnings,Must,General operation,Prepared Statement; static analyzer,all tables,src/lms.cpp,evidence/clang-analyzer.txt; external cppcheck pending,Partial static analysis only
+NFR-08 Invalid input/db errors do not crash,Must,All use cases,Error exceptions console catch,n/a,src/main.cpp;src/lms.cpp,TC-01/04/05/12 invalid/error paths,Automated partial PASS

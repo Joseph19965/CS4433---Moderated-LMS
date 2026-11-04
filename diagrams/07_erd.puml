@@ -1,0 +1,80 @@
+@startuml
+hide circle
+skinparam linetype ortho
+entity DEPARTMENT { * department_id : INTEGER <<PK>>
+--
+ name : TEXT <<UQ>> }
+entity USERS { * user_id : INTEGER <<PK>>
+--
+ username : TEXT <<UQ>>
+ password_hash : TEXT
+ role : TEXT
+ dept_id : INTEGER <<FK>>
+ active : BOOL }
+entity COURSE { * course_id : INTEGER <<PK>>
+--
+ code : TEXT <<UQ>>
+ title : TEXT
+ dept_id : INTEGER <<FK>> }
+entity COURSE_LECTURER { * course_id : INTEGER <<PK,FK>>
+ * lecturer_id : INTEGER <<PK,FK>> }
+entity ENROLMENT { * course_id : INTEGER <<PK,FK>>
+ * student_id : INTEGER <<PK,FK>> }
+entity ASSIGNMENT { * assignment_id : INTEGER <<PK>>
+--
+ course_id : INTEGER <<FK>>
+ title : TEXT
+ deadline : INTEGER
+ max_mark : REAL
+ created_by : INTEGER <<FK>> }
+entity EXTENSION { * extension_id : INTEGER <<PK>>
+--
+ assignment_id : INTEGER <<FK>>
+ student_id : INTEGER <<FK>>
+ new_deadline : INTEGER
+ reason : TEXT
+ granted_by : INTEGER <<FK>> }
+entity CLASS_EXTENSION { * assignment_id : INTEGER <<PK,FK>>
+--
+ new_deadline : INTEGER
+ reason : TEXT
+ granted_by : INTEGER <<FK>>
+ updated_at : INTEGER }
+entity SUBMISSION { * submission_id : INTEGER <<PK>>
+--
+ assignment_id : INTEGER <<FK>>
+ student_id : INTEGER <<FK>>
+ content : TEXT
+ submitted_at : INTEGER
+ status : TEXT }
+entity MARK { * mark_id : INTEGER <<PK>>
+--
+ submission_id : INTEGER <<FK,UQ>>
+ raw_mark : REAL
+ final_mark : REAL
+ feedback : TEXT
+ marked_by : INTEGER <<FK>>
+ moderated_by : INTEGER <<FK>> }
+entity AUDIT_EVENT { * audit_id : INTEGER <<PK>>
+--
+ mark_id : INTEGER <<FK>>
+ actor_id : INTEGER <<FK>>
+ changed_at : INTEGER
+ old_value : REAL NULL
+ new_value : REAL
+ reason : TEXT }
+DEPARTMENT ||--o{ COURSE
+DEPARTMENT |o--o{ USERS
+COURSE ||--o{ ASSIGNMENT
+COURSE ||--o{ COURSE_LECTURER
+USERS ||--o{ COURSE_LECTURER
+COURSE ||--o{ ENROLMENT
+USERS ||--o{ ENROLMENT
+ASSIGNMENT ||--o{ EXTENSION
+ASSIGNMENT ||--o| CLASS_EXTENSION
+USERS ||--o{ EXTENSION
+USERS ||--o{ SUBMISSION
+ASSIGNMENT ||--o{ SUBMISSION
+SUBMISSION ||--o| MARK
+MARK ||--o{ AUDIT_EVENT
+@enduml

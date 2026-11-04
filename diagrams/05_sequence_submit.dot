@@ -1,0 +1,5 @@
+digraph{graph[label="Submit Assignment - Sequence of Calls",labelloc=t,rankdir=TB,fontsize=18,nodesep=.25,ranksep=.4];node[shape=box,style="rounded,filled",color="#427097",fillcolor="#edf3f9",fontsize=11];a[label="1 Student → ConsoleUI
+submit assignment + content"];b[label="2 ConsoleUI → LmsService
+submit(student, assignment, content, now)"];c[label="3 LmsService → Database
+check role/enrolment; effective deadline"];d[label="4 LmsService → SubmissionRepository
+get existing submission"];e[label="5a New → INSERT Submitted/Late"];f[label="5b Existing valid → UPDATE before deadline"];g[label="5c Invalid, late resubmit, wrong state → Error",fillcolor="#faeded"];h[label="6 Confirmation with submission ID",fillcolor="#e7f5ee"];a->b->c->d;d->e[label="new"];d->f[label="allowed resubmit"];d->g[label="blocked"];e->h;f->h;}

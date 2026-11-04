@@ -1,0 +1,51 @@
+@startuml
+|Student|
+start
+:Log in and select enrolled assignment;
+:Enter work;
+|System|
+if (Valid content and enrolment?) then (yes)
+ :Resolve effective deadline;
+ if (Previous submission?) then (yes)
+  if (Before deadline, not marked?) then (yes)
+   :Replace submission;
+  else (no)
+   :Show resubmission denied;
+   stop
+  endif
+ else (no)
+  :Insert submission as Submitted or Late;
+ endif
+ :Confirm receipt;
+else (no)
+ :Display validation error;
+ stop
+endif
+|Lecturer|
+:Review submission;
+:Enter raw mark and feedback;
+|System|
+:Calculate penalty and final mark;
+:Store mark and audit event;
+|HoD|
+:Review all departmental marks;
+if (Accept?) then (yes)
+ :Moderate marks (reason mandatory);
+ |System|
+ :Write audit event and mark Moderated;
+ |HoD|
+ :Release when all recorded course marks moderated;
+ |System|
+ :Mark Released;
+ |Student|
+ :View final mark and feedback;
+ stop
+else (no)
+ :Reject for re-marking;
+ |Lecturer|
+ :Re-mark and send back for HoD review;
+ |HoD|
+ :Review revised mark;
+ stop
+endif
+@enduml
